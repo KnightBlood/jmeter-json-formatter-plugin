@@ -22,7 +22,11 @@ public class JSONFormatter {
         try {
             // 使用FastJSON2进行格式化
             Object jsonObject = JSON.parseObject(jsonString);
-            return JSON.toJSONString(jsonObject, JSONWriter.Feature.PrettyFormat);
+            return JSON.toJSONString(jsonObject, new JSONWriter.Feature[] {
+                    JSONWriter.Feature.WriteMapNullValue,
+                    JSONWriter.Feature.WriteNullListAsEmpty,
+                    JSONWriter.Feature.PrettyFormat
+            });
         } catch (Exception e) {
             // 如果解析失败，返回原始内容
             return jsonString;
