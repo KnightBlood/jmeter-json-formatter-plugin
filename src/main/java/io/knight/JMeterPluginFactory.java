@@ -4,7 +4,8 @@ import org.apache.jmeter.engine.StandardJMeterEngine;
 
 /**
  * JMeter插件工厂类
- * 用于创建和初始化插件实例
+ * 实现插件的创建和初始化功能
+ * 遵循工厂模式设计原则
  */
 public class JMeterPluginFactory {
     /**

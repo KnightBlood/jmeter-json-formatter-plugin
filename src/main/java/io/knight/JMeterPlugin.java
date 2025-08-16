@@ -1,30 +1,43 @@
 package io.knight;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.apache.jmeter.gui.tree.JMeterTreeModel;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.tree.JMeterTreeNode;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreeModel;
-import java.util.Enumeration;
 import java.lang.reflect.Method;
-import org.apache.jmeter.gui.plugin.MenuCreator;
+import java.util.Enumeration;
+
 import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.MainFrame;
+import org.apache.jmeter.gui.plugin.MenuCreator;
+import org.apache.jmeter.gui.tree.JMeterTreeNode;
+import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.property.CollectionProperty;
-import org.apache.jmeter.testelement.property.PropertyIterator;
+import org.apache.jmeter.util.JMeterUtils;
 
 /**
- * JMeter插件主类，提供JSON格式化功能
- * 该插件在JMeter的工具菜单中添加JSON格式化选项，
- * 可对HTTP请求中的JSON请求体进行格式化操作
+ * JMeter插件主类
+ * 提供JSON参数格式化功能的插件入口
+ * 实现菜单创建和功能注册的核心逻辑
+ * 
+ * 该插件的主要功能：
+ * 1. 在JMeter的工具菜单中添加"JSON格式化"选项
+ * 2. 遍历测试计划中的所有HTTP请求
+ * 3. 自动识别JSON格式的请求参数并进行格式化
+ * 4. 支持两种参数类型：普通Argument和TestElementProperty
  */
 public class JMeterPlugin implements MenuCreator {
     /**
      * 初始化插件功能
      * 包括安装钩子和添加菜单项
+     * 
+     * 1. 安装JSON格式化钩子，用于拦截和处理JSON参数
+     * 2. 通过反射注册菜单创建者，将插件菜单集成到JMeter界面中
+     * 
+     * 使用反射机制是为了避免直接依赖JMeter内部类，
+     * 提高插件的兼容性和可维护性
      */
     public void initialize() {
         // 初始化JSON格式化钩子
@@ -280,6 +293,9 @@ public class JMeterPlugin implements MenuCreator {
      * 判断测试元素是否是带有参数的采样器
      * @param element 测试元素
      * @return 是否是带有参数的采样器
+     * 
+     * 这个方法用于确定给定的测试元素是否是
+     * 可以包含参数的采样器（如HTTP请求采样器）
      */
     private boolean isSamplerWithArguments(TestElement element) {
         // 检查是否实现了getArguments方法
